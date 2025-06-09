@@ -1,27 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useCart } from "./CartContext";
 
 export default function Home() {
-  const [cartCount, setCartCount] = useState(0);
-
-  useEffect(() => {
-    const updateCartCount = () => {
-      try {
-        const stored = localStorage.getItem("cart");
-        if (stored) {
-          const cart = JSON.parse(stored);
-          setCartCount(cart.reduce((a, b) => a + (b.qty || 1), 0));
-        } else {
-          setCartCount(0);
-        }
-      } catch {
-        setCartCount(0);
-      }
-    };
-    updateCartCount();
-    window.addEventListener("storage", updateCartCount);
-    return () => window.removeEventListener("storage", updateCartCount);
-  }, []);
+  const { cart } = useCart();
 
   return (
     <>
@@ -39,9 +21,11 @@ export default function Home() {
             </button>
           </div>
           <div className="nav-icons">
-            <a href="cart.html">
+            <a href="/cart">
               <i className="fas fa-shopping-cart"></i> Keranjang{" "}
-              <span className="cart-count">{cartCount}</span>
+              <span className="cart-count">
+                {cart.reduce((a, b) => a + (b.qty || 1), 0)}
+              </span>
             </a>
             <a href="/login">
               <i className="fas fa-user"></i> Akun

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./Cart.css";
+import { useCart } from "./CartContext";
 
 const initialCart = [
   {
@@ -24,14 +25,7 @@ const initialCart = [
 const SHIPPING_COST = 10000;
 
 const Cart = () => {
-  const [cart, setCart] = useState(() => {
-    try {
-      const stored = localStorage.getItem("cart");
-      return stored ? JSON.parse(stored) : [];
-    } catch {
-      return [];
-    }
-  });
+  const { cart, setCart, removeFromCart, updateQty, clearCart } = useCart();
   const [discount, setDiscount] = useState(0);
   const [promo, setPromo] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
@@ -42,33 +36,21 @@ const Cart = () => {
   });
   const [notification, setNotification] = useState("");
 
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
-
   // Cart calculations
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   const total = subtotal + SHIPPING_COST - discount;
 
   // Cart actions
   const changeQty = (id, delta) => {
-    setCart((prev) =>
-      prev
-        .map((item) =>
-          item.id === id
-            ? { ...item, qty: Math.max(1, item.qty + delta) }
-            : item
-        )
-        .filter((item) => item.qty > 0)
-    );
+    updateQty(id, Math.max(1, (cart.find((i) => i.id === id)?.qty || 1) + delta));
   };
 
   const removeItem = (id) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
+    removeFromCart(id);
   };
 
-  const clearCart = () => {
-    setCart([]);
+  const clearCartHandler = () => {
+    clearCart();
     setNotification("Keranjang dikosongkan.");
     setTimeout(() => setNotification(""), 2000);
   };
@@ -132,7 +114,9 @@ const Cart = () => {
           <div className="nav-icons">
             <a href="/cart" className="active">
               <i className="fas fa-shopping-cart"></i> Keranjang{" "}
-              <span className="cart-count">{cart.length}</span>
+              <span className="cart-count">
+                {cart.reduce((a, b) => a + (b.qty || 1), 0)}
+              </span>
             </a>
             <a href="/login">
               <i className="fas fa-user"></i> Akun
@@ -451,7 +435,7 @@ const Cart = () => {
               <a href="products.html" className="continue-shopping">
                 <i className="fas fa-arrow-left"></i> Lanjutkan Belanja
               </a>
-              <button className="clear-cart" onClick={clearCart}>
+              <button className="clear-cart" onClick={clearCartHandler}>
                 Kosongkan Keranjang
               </button>
             </div>

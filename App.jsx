@@ -1,19 +1,19 @@
-gitimport React from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import About from "./Kirei-s-Mart/about";
-import Contact from "./Kirei-s-Mart/contact";
-import Home from "./Kirei-s-Mart/home";
-import Reviews from "./Kirei-s-Mart/reviews";
-import CategoryBahanMakanan from "./Kirei-s-Mart/category-bahan-makanan";
-import CategoryBumbuMasakan from "./Kirei-s-Mart/category-bumbu-masakan";
-import CategoryJajananMinuman from "./Kirei-s-Mart/category-jajanan-minuman";
-import CategoryMie from "./Kirei-s-Mart/category-mie";
-import CategoryNonfood from "./Kirei-s-Mart/category-nonfood";
-import CategoryObat from "./Kirei-s-Mart/category-obat";
-import Navbar from "./Kirei-s-Mart/Navbar";
-import Login from "./Kirei-s-Mart/login";
-import Dashboard from "./Kirei-s-Mart/admin/dashboard";
-import Cart from "./Kirei-s-Mart/cart";
+import About from "./about";
+import Contact from "./contact";
+import Home from "./home";
+import Reviews from "./reviews";
+import CategoryBahanMakanan from "./category-bahan-makanan";
+import CategoryBumbuMasakan from "./category-bumbu-masakan";
+import CategoryJajananMinuman from "./category-jajanan-minuman";
+import CategoryMie from "./category-mie";
+import CategoryNonfood from "./category-nonfood";
+import CategoryObat from "./category-obat";
+import Navbar from "./Navbar";
+import Login from "./login";
+import Dashboard from "./admin/dashboard";
+import Cart from "./cart";
 
 export default function App() {
   return (

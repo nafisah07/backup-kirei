@@ -1,8 +1,10 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useCart } from "./CartContext";
 
 export default function Navbar() {
   const location = useLocation();
+  const { cart } = useCart();
   // Hide navbar on admin pages (optional, bisa diatur sesuai kebutuhan)
   if (location.pathname.startsWith("/admin")) return null;
   return (
@@ -120,6 +122,43 @@ export default function Navbar() {
             </Link>
           </li>
         </ul>
+        <div
+          style={{
+            position: "absolute",
+            right: 40,
+            top: 10,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <Link
+            to="/cart"
+            style={{
+              color: "#222",
+              textDecoration: "none",
+              fontSize: 20,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <i className="fas fa-shopping-cart" style={{ marginRight: 6 }}></i>
+            Keranjang
+            <span
+              className="cart-count"
+              style={{
+                marginLeft: 6,
+                background: "#1976d2",
+                color: "#fff",
+                borderRadius: 8,
+                padding: "2px 8px",
+                fontSize: 16,
+                marginLeft: 8,
+              }}
+            >
+              {cart.reduce((a, b) => a + (b.qty || 1), 0)}
+            </span>
+          </Link>
+        </div>
       </nav>
       <div style={{ minHeight: 60 }} />
     </>

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./Products.css";
+import { useCart } from "./CartContext";
 
 const categories = [
   {
@@ -84,27 +85,21 @@ const featuredProducts = [
 ];
 
 const Products = () => {
-  const [cart, setCart] = useState(() => {
-    // Load cart from localStorage if available
-    const stored = localStorage.getItem("cart");
-    return stored ? JSON.parse(stored) : [];
-  });
+  const { cart, addToCart } = useCart();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+  // Hapus state cart dan useEffect yang lama
 
-  const addToCart = (product) => {
-    setCart((prev) => {
-      // Cek jika produk sudah ada, tambahkan qty jika sudah
-      const idx = prev.findIndex((p) => p.name === product.name);
-      if (idx !== -1) {
-        const updated = [...prev];
-        updated[idx].qty = (updated[idx].qty || 1) + 1;
-        return updated;
-      }
-      return [...prev, { ...product, qty: 1 }];
+  // Ganti fungsi addToCart agar pakai context dan redirect ke keranjang
+  const handleAddToCart = (product) => {
+    addToCart({
+      id: product.id || product.name, // fallback jika id tidak ada
+      name: product.name,
+      price: Number(product.price.replace(/\D/g, "")),
+      image: product.img,
+      qty: 1,
     });
+    navigate("/cart");
   };
 
   return (
@@ -117,13 +112,13 @@ const Products = () => {
             <p>Sembako Lengkap & Terjangkau</p>
           </div>
           <div className="nav-icons">
-            <a href="cart.html">
+            <a href="/cart">
               <i className="fas fa-shopping-cart"></i> Keranjang{" "}
               <span className="cart-count">
                 {cart.reduce((a, b) => a + (b.qty || 1), 0)}
               </span>
             </a>
-            <a href="admin/account.html">
+            <a href="/login">
               <i className="fas fa-user"></i> Akun
             </a>
           </div>
@@ -385,7 +380,10 @@ const Products = () => {
                   <div className="product-stock">
                     <i className="fas fa-check-circle"></i> {p.stock}
                   </div>
-                  <button className="btn-add-cart" onClick={() => addToCart(p)}>
+                  <button
+                    className="btn-add-cart"
+                    onClick={() => handleAddToCart(p)}
+                  >
                     <i className="fas fa-shopping-cart"></i> Tambah ke Keranjang
                   </button>
                 </div>
